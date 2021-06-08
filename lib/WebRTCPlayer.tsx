@@ -22,7 +22,6 @@ interface State {
   isMuted?: boolean
   isPlaying: boolean
   error?: Error
-  videoStyle: React.CSSProperties
 }
 
 export class WebRTCPlayer extends React.Component<Props, State> implements IPlayer {
