@@ -4,7 +4,6 @@ import { IPlayerProps, IPlayer } from './IPlayer'
 
 interface Props extends IPlayerProps {
   id: string
-  style?: React.CSSProperties,      // Html CSS Properties
   streamName?: string
   videoRatio: number
   disableAudio: boolean
@@ -22,7 +21,6 @@ interface State {
   isMuted?: boolean
   isPlaying: boolean
   error?: Error
-  videoStyle: React.CSSProperties
 }
 
 export class WebRTCPlayer extends React.Component<Props, State> implements IPlayer {
@@ -45,15 +43,9 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
     return this._refVideo.current || undefined
   }
 
-  private get frameElement(): HTMLDivElement|undefined {
-    return this._refFrame.current || undefined
-  }
-
   private playerInterface?: Player
 
   private resizeHandler!: () => void
-
-  private _refFrame = React.createRef<HTMLDivElement>()
 
   private _refVideo = React.createRef<HTMLVideoElement>()
 
@@ -61,111 +53,12 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
     super(props)
     this.state = {
       loadCount: 0,
-      isPlaying: false,
-      videoStyle: {
-        width: '100%',
-        height: '100%'
-      }
+      isPlaying: false
     }
   }
 
   componentDidMount() {
     this._initPlayer(this.props.autoPlay)
-
-    // register a resize handler.
-    this.resizeHandler = () => {
-      const videoElement = this.videoElement
-      const frameElement = this.frameElement
-      if (!videoElement || !frameElement) { return }
-      //
-      const videoSize = {
-        width: videoElement.videoWidth,
-        height: videoElement.videoHeight
-      }
-      let frameSize = {
-        width: frameElement.clientWidth,
-        height: frameElement.clientHeight
-      }
-      if (!(videoSize.width > 0 && videoSize.height >0) || !frameSize) {
-        console.log('Bailed on calculation size info is not valid')
-        return
-      }
-      if (videoSize && frameSize) {
-        // perform calculation
-        const videoAspectRatio = videoSize.width / videoSize.height
-        let outState: React.CSSProperties = {}
-        // (1) Placement
-        if (/(cw)/.test(this.props.rotate)) {
-          frameSize = {
-            height: frameSize.width,
-            width: frameSize.height
-          }
-        }
-        const frameAspectRatio = frameSize.width / frameSize.height
-        let actualVideoSize: { width: number, height: number } = { width: 0, height: 0 }
-        console.log(`Input (s=${this.props.sizing}, v, f) = ratios[`, videoAspectRatio, frameAspectRatio, '] frame[', videoSize, frameSize, ']')
-
-        // width dominate is based on given associated sizing option.
-        if (this.props.sizing === 'contain' && videoAspectRatio > frameAspectRatio
-          || this.props.sizing === 'cover' && videoAspectRatio < frameAspectRatio) {
-          // width dominate
-          console.log(`Width dominate ...`, videoAspectRatio, frameAspectRatio)
-          actualVideoSize = {
-            width: frameSize.width,
-            height: frameSize.width / videoAspectRatio
-          }
-          outState = {
-            ...outState,
-            width: `${actualVideoSize.width}px`,
-            left: '0',
-            top: `${frameSize.height/2 - actualVideoSize.height/2}px`,
-          }
-        } else {
-          // height dominate
-          console.log(`Height dominate ...`, videoAspectRatio, frameAspectRatio)
-          actualVideoSize = {
-            width: frameSize.height * videoAspectRatio,
-            height: frameSize.height
-          }
-          outState = {
-            ...outState,
-            height: `${actualVideoSize.height}px`,
-            top: '0',
-            left: `${frameSize.width/2 - actualVideoSize.width/2}px`,
-          }
-        }
-        // (2) Offset Tweak
-        if (/(cw)/.test(this.props.rotate)) {
-          // left/top offset need to be adjusted accordingly.
-          // Flip back
-          frameSize = {
-            height: frameSize.width,
-            width: frameSize.height
-          }
-          outState.top = (frameSize.height - actualVideoSize.height) / 2
-          outState.left = (frameSize.width - actualVideoSize.width) / 2
-        }
-        if (this.props.rotate === 'ccw') {
-          outState.transform = 'rotate(-90deg)'
-        } else if (this.props.rotate === 'cw') {
-          outState.transform = 'rotate(90deg)'
-        } else if (this.props.rotate === 'flip') {
-          outState.transform = 'rotate(180deg)'
-        }
-        this.setState({
-          videoStyle: outState
-        })
-      }
-    }
-
-    this.resizeHandler()
-
-    window.addEventListener('resize', this.resizeHandler)
-  }
-
-  componentWillUnmount() {
-    // unregister a resize handler.
-    window.removeEventListener('resize', this.resizeHandler)
   }
 
   private _initPlayer(autoPlay: boolean) {
@@ -196,40 +89,11 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
   }
 
   render() {
-    return <div id={ this.props.id } 
-        ref={this._refFrame}
-        style={{ ...this.props.style }}
-        className={`webrtc-player ${this.props.sizing} ${this.props.className}`}>
+    return
       <video 
         ref={this._refVideo}
         playsInline autoPlay
         className={this.props.rotate} 
-        style={this.state.videoStyle}
         />
-      {
-        this.playerInterface && this.state.isMuted &&
-        <div className="unmute-blocker d-flex justify-content-center align-items-center" 
-            onClick={() => this.playerInterface && (this.playerInterface.isMuted = false) }>
-          { this.props.children }
-          {
-            this.props.showUnmuteButton && 
-            <button className="btn btn-danger"><i className="fas fa-volume-mute"></i> TAP TO UNMUTE</button>
-          }
-        </div>
-      }
-      {
-        this.state.error &&
-        <div className="unmute-blocker d-flex justify-content-center align-items-center"
-            onClick={this.play.bind(this)}>
-          {
-            this.props.showErrorOverlay &&
-            <p className="text-danger text-center">
-              {`${this.state.error.message}`}<br/><br/>
-              <button className="btn btn-danger"><i className="fas redo-alt"></i> TAP TO RETRY</button>
-            </p>
-          }
-        </div>
-      }
-    </div>
-  }
+    }
 }
