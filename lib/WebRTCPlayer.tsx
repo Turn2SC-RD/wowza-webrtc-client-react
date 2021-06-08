@@ -45,8 +45,6 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
 
   private playerInterface?: Player
 
-  private resizeHandler!: () => void
-
   private _refVideo = React.createRef<HTMLVideoElement>()
 
   constructor(props: Props) {
