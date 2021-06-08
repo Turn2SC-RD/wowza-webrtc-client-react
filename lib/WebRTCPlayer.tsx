@@ -86,10 +86,6 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
         width: frameElement.clientWidth,
         height: frameElement.clientHeight
       }
-      if (!(videoSize.width > 0 && videoSize.height >0) || !frameSize) {
-        console.log('Bailed on calculation size info is not valid')
-        return
-      }
       if (videoSize && frameSize) {
         // perform calculation
         const videoAspectRatio = videoSize.width / videoSize.height
