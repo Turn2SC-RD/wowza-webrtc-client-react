@@ -97,7 +97,7 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
   }
 
   render() {
-    return <div id={ this.props.id }>
+    return <div id={ this.props.id } ref={this._refFrame}>
       <video 
         ref={this._refVideo}
         playsInline autoPlay muted
