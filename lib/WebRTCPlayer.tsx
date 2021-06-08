@@ -15,6 +15,7 @@ interface Props extends IPlayerProps {
   showUnmuteButton: boolean
   showErrorOverlay: boolean
   className: string
+  videoClass: string
 }
 
 interface State {
@@ -86,11 +87,14 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
         width: frameElement.clientWidth,
         height: frameElement.clientHeight
       }
+      if (!(videoSize.width > 0 && videoSize.height >0) || !frameSize) {
+        console.log('Bailed on calculation size info is not valid')
+        return
+      }
       if (videoSize && frameSize) {
         // perform calculation
         const videoAspectRatio = videoSize.width / videoSize.height
-        let outState: React.CSSProperties = {
-        }
+        let outState: React.CSSProperties = {}
         // (1) Placement
         if (/(cw)/.test(this.props.rotate)) {
           frameSize = {
@@ -125,7 +129,10 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
             height: frameSize.height
           }
           outState = {
-            ...outState
+            ...outState,
+            height: `${actualVideoSize.height}px`,
+            top: '0',
+            left: `${frameSize.width/2 - actualVideoSize.width/2}px`,
           }
         }
         // (2) Offset Tweak
@@ -191,13 +198,15 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
 
   render() {
     return <div id={ this.props.id } 
-        ref={this._refFrame}>
+        ref={this._refFrame}
+        style={{ ...this.props.style }}
+        className={`webrtc-player ${this.props.sizing} ${this.props.className}`}>
       <video 
         ref={this._refVideo}
         playsInline autoPlay
-        className={this.props.rotate} 
-        style={{ ...this.props.style }}
-      />
+        className={this.props.videoClass} 
+        style={this.state.videoStyle}
+        />
     </div>
   }
 }
