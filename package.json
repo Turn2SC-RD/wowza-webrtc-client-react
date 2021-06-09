@@ -22,6 +22,6 @@
     "typescript": "^3.3.3333"
   },
   "dependencies": {
-    "wowza-webrtc-client": "git+https://github.com/Turn2SC-RD/wowza-webrtc-client-react.git"
+    "wowza-webrtc-client": "git+https://github.com/Turn2SC-RD/wowza-webrtc-client-react"
   }
 }
