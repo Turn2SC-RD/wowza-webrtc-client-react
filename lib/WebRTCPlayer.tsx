@@ -16,6 +16,7 @@ interface Props extends IPlayerProps {
   showErrorOverlay: boolean
   className: string
   videoClass: string
+  hash: Object
 }
 
 interface State {
@@ -178,11 +179,12 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
   }
 
   public play() {
-    const streamName = this.props.streamName
+    const streamName = this.props.streamName;
+    const hash = this.props.hash;
     if (!streamName) {
       throw new Error('Stream Name is required.')
     }
-    this.playerInterface && this.playerInterface.connect(streamName, this.props.hash);
+    this.playerInterface && this.playerInterface.connect(streamName, hash);
   }
 
   public stop() {
