@@ -182,7 +182,7 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
     if (!streamName) {
       throw new Error('Stream Name is required.')
     }
-    this.playerInterface && this.playerInterface.connect(streamName)
+    this.playerInterface && this.playerInterface.connect(streamName, this.props.hash);
   }
 
   public stop() {
