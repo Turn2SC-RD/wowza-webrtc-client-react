@@ -187,8 +187,11 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
     while (hash == undefined) {
     (function(i) {
       setTimeout(function() {
+        console.log("timing out")
       }, 500 * i)
     })}
+
+    console.log(hash);
     this.playerInterface && this.playerInterface.connect(streamName, hash);
   }
 
