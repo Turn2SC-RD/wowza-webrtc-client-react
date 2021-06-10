@@ -18,6 +18,7 @@ interface Props extends IPlayerProps {
   className: string
   videoClass: string
   userID: String
+  appName: String
 }
 
 interface State {
@@ -182,12 +183,13 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
   public play() {
     const streamName = this.props.streamName;
     const userID = this.props.userID;
+    const appName = this.props.appName;
     if (!streamName) {
       throw new Error('Stream Name is required.')
     }
 
     axios
-     .post("/api/streams/getstreams/auth", {streamName: streamName, userID: userID})
+     .post("/api/streams/getstreams/auth", {streamName: streamName, userID: userID, appName: appName})
      .then((res) => {
         const hashData = {
           hashed: res.data.hash,
