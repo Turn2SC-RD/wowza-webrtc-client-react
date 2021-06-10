@@ -17,7 +17,7 @@ interface Props extends IPlayerProps {
   showErrorOverlay: boolean
   className: string
   videoClass: string
-  hash: Object
+  userID: String
 }
 
 interface State {
@@ -102,13 +102,13 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
         }
         const frameAspectRatio = frameSize.width / frameSize.height
         let actualVideoSize: { width: number, height: number } = { width: 0, height: 0 }
-        console.log(`Input (s=${this.props.sizing}, v, f) = ratios[`, videoAspectRatio, frameAspectRatio, '] frame[', videoSize, frameSize, ']')
+        // console.log(`Input (s=${this.props.sizing}, v, f) = ratios[`, videoAspectRatio, frameAspectRatio, '] frame[', videoSize, frameSize, ']')
 
         // width dominate is based on given associated sizing option.
         if (this.props.sizing === 'contain' && videoAspectRatio > frameAspectRatio
           || this.props.sizing === 'cover' && videoAspectRatio < frameAspectRatio) {
           // width dominate
-          console.log(`Width dominate ...`, videoAspectRatio, frameAspectRatio)
+          // console.log(`Width dominate ...`, videoAspectRatio, frameAspectRatio)
           actualVideoSize = {
             width: frameSize.width,
             height: frameSize.width / videoAspectRatio
@@ -121,7 +121,7 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
           }
         } else {
           // height dominate
-          console.log(`Height dominate ...`, videoAspectRatio, frameAspectRatio)
+          // console.log(`Height dominate ...`, videoAspectRatio, frameAspectRatio)
           actualVideoSize = {
             width: frameSize.height * videoAspectRatio,
             height: frameSize.height
@@ -181,13 +181,13 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
 
   public play() {
     const streamName = this.props.streamName;
-    const hash = this.props.hash;
+    const userID = this.props.userID;
     if (!streamName) {
       throw new Error('Stream Name is required.')
     }
 
     axios
-     .post("/api/streams/getstreams/auth", {streamName: streamName})
+     .post("/api/streams/getstreams/auth", {streamName: streamName, userID: userID})
      .then((res) => {
         const hashData = {
           hashed: res.data.hash,
