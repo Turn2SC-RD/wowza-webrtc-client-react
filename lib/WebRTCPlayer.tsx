@@ -184,7 +184,7 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
     if (!streamName) {
       throw new Error('Stream Name is required.')
     }
-    while (hash.hashed == undefined) {
+    while (hash == undefined) {
     (function(i) {
       setTimeout(function() {
         console.log("timing out")
