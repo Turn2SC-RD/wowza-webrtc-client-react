@@ -189,7 +189,7 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
     axios
      .post("/api/streams/getstreams/auth", {streamName: streamName})
      .then((res) => {
-        var hashData {
+        const hashData = {
           hashed: res.data.hash,
           starttime: 0,
           endtime: 0
