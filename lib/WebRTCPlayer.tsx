@@ -191,8 +191,8 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
      .then((res) => {
         const hashData = {
           hashed: res.data.hash,
-          starttime: 0,
-          endtime: 0
+          startTime: 0,
+          endTime: 0
         }
 
         this.playerInterface && this.playerInterface.connect(streamName, hashData);
@@ -200,8 +200,6 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
      .catch((err) =>
        console.log(err)
      );
-
-    console.log(hash);
   }
 
   public stop() {
