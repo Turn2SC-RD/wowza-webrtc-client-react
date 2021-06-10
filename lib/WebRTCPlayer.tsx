@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { WebRTCPlayer as Player, WebRTCConfiguration } from 'wowza-webrtc-client'
 import { IPlayerProps, IPlayer } from './IPlayer'
+import axios from "axios";
 
 interface Props extends IPlayerProps {
   id: string
@@ -184,15 +185,23 @@ export class WebRTCPlayer extends React.Component<Props, State> implements IPlay
     if (!streamName) {
       throw new Error('Stream Name is required.')
     }
-    while (hash == undefined) {
-    (function(i) {
-      setTimeout(function() {
-        console.log("timing out")
-      }, 500 * i)
-    })}
+
+    axios
+     .post("/api/streams/getstreams/auth", {streamName: streamName})
+     .then((res) => {
+        var hashData {
+          hashed: res.data.hash,
+          starttime: 0,
+          endtime: 0
+        }
+
+        this.playerInterface && this.playerInterface.connect(streamName, hashData);
+     })
+     .catch((err) =>
+       console.log(err)
+     );
 
     console.log(hash);
-    this.playerInterface && this.playerInterface.connect(streamName, hash);
   }
 
   public stop() {
